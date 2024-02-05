@@ -6,4 +6,8 @@ const { dbConnection } = require("./db/config");
 dbConnection();
 
 app.use(express.json());
-app.listen(PORT, () => console.log(`Servidor levantado en el puerto ${PORT}`));
+
+app.use("/users", require("./routes/users"));
+// app.use("/events", require("./routes/events"));
+
+app.listen(PORT, () => console.log(`Server up on port ${PORT}`));
