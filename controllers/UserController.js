@@ -1,6 +1,9 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 
+const jwt = require("jsonwebtoken");
+const jwt_secret = process.env.JWT_SECRET;
+
 const UserController = {
   async createUser(req, res) {
     try {
@@ -25,6 +28,38 @@ const UserController = {
     } catch (error) {
       console.error(error);
       res.status(500).send({ msg: "Error creating user", error });
+    }
+  },
+
+  async login(req, res) {
+    try {
+      const user = await User.findOne({
+        email: req.body.email,
+      });
+
+      if (!user) {
+        return res.status(400).send({ message: "Incorrect email or password" });
+      }
+
+      const isMatch = bcrypt.compareSync(req.body.password, user.password);
+      if (!isMatch) {
+        return res.status(400).send({ message: "Incorrect email or password" });
+      }
+
+      const token = jwt.sign({ _id: user._id }, jwt_secret);
+
+      // FALTA METERSELO AL MODELO TOKEN
+      await user.save();
+      res.send({
+        message: "Welcome " + user.username,
+        token,
+        user: user,
+      });
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .send({ message: "There was a problem with login", error });
     }
   },
 };
