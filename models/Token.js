@@ -8,7 +8,7 @@ const TokenSchema = new mongoose.Schema(
     },
 
     user_id: {
-      type: ObjectId,
+      type: String,
       red: "User",
       required: true,
     },

@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Token = require("../models/Token");
 const bcrypt = require("bcryptjs");
 
 const jwt = require("jsonwebtoken");
@@ -48,8 +49,12 @@ const UserController = {
 
       const token = jwt.sign({ _id: user._id }, jwt_secret);
 
-      // FALTA METERSELO AL MODELO TOKEN
-      await user.save();
+      await user.save(); // NOTE: Esto lo que hace es esperar a que se guarde el objeto user antes de continuar con el código.
+      await Token.create({
+        login_token: token,
+        user_id: user._id,
+      });
+
       res.send({
         message: "Welcome " + user.username,
         token,
@@ -59,9 +64,19 @@ const UserController = {
       console.error(error);
       res
         .status(500)
-        .send({ message: "There was a problem with login", error });
+        .send({ message: "There was a problem with server", error });
     }
   },
+
+  // async logout(req, res) {
+  //   try {
+  //   } catch (error) {
+  //     console.error(error);
+  //     res
+  //       .status(500)
+  //       .send({ message: "There was a problem with server", error });
+  //   }
+  // },
 };
 
 module.exports = UserController;
