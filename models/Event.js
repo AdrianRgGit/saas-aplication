@@ -11,6 +11,7 @@ const EventSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    
     userId: { type: UserSchema.Types.ObjectId, ref: "User" },
   },
   { timestamps: true }
