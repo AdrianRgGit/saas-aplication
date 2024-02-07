@@ -49,6 +49,11 @@ const UserController = {
 
       const token = jwt.sign({ _id: user._id }, jwt_secret);
 
+      res.cookie("token", token, {
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 24 * 7,
+      });
+
       await user.save(); // NOTE: Esto lo que hace es esperar a que se guarde el objeto user antes de continuar con el código.
       await Token.create({
         login_token: token,
@@ -68,15 +73,15 @@ const UserController = {
     }
   },
 
-  // async logout(req, res) {
-  //   try {
-  //   } catch (error) {
-  //     console.error(error);
-  //     res
-  //       .status(500)
-  //       .send({ message: "There was a problem with server", error });
-  //   }
-  // },
+  async logout(req, res) {
+    try {
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .send({ message: "There was a problem with server", error });
+    }
+  },
 };
 
 module.exports = UserController;
